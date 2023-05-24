@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package testpb;
+
+option go_package = "./testpb";
+
+service TestService {
+    rpc TestMethod (TestRequest) returns (TestResponse);
+    rpc TestMethod2 (TestRequest) returns (TestResponse);
+}
+
+message TestRequest {
+    string name = 1;
+}
+
+message TestResponse {
+    string message = 1;
+}
