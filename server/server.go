@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	cc, err := grpc.DialContext(context.Background(), "localhost:8081", grpc.WithInsecure(), grpc.WithCodec(proxy.Codec()))
+	cc, err := grpc.DialContext(context.Background(), "localhost:8081", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -22,12 +22,10 @@ func main() {
 		md, _ := metadata.FromIncomingContext(ctx)
 		outCtx := metadata.NewOutgoingContext(ctx, md.Copy())
 
-		log.Println("AAAA")
 		return outCtx, cc, nil
 	}
 
 	s := grpc.NewServer(
-		grpc.CustomCodec(proxy.Codec()),
 		grpc.UnknownServiceHandler(proxy.TransparentHandler(director)),
 	)
 

@@ -5,14 +5,13 @@ import (
 	"grpc_test/pb/testpb"
 	"log"
 
-	"github.com/mwitkow/grpc-proxy/proxy"
 	"google.golang.org/grpc"
 )
 
 func main() {
 	ctx := context.Background()
 
-	conn, err := grpc.DialContext(ctx, "localhost:8080", grpc.WithInsecure(), grpc.WithCodec(proxy.Codec()))
+	conn, err := grpc.DialContext(ctx, "localhost:8080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalln(err)
 	}
