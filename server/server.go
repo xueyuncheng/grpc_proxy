@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"grpc_test/pb/testpb"
+	"grpc_test/pb/commpb"
 	"log"
 	"net"
 
@@ -13,15 +13,16 @@ import (
 )
 
 func main() {
+	cc, err := grpc.DialContext(context.Background(), "localhost:8081", grpc.WithInsecure(), grpc.WithCodec(proxy.Codec()))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	director := func(ctx context.Context, fullMethodName string) (context.Context, *grpc.ClientConn, error) {
 		md, _ := metadata.FromIncomingContext(ctx)
 		outCtx := metadata.NewOutgoingContext(ctx, md.Copy())
 
-		cc, err := grpc.DialContext(ctx, "localhost:8081", grpc.WithInsecure(), grpc.WithCodec(proxy.Codec()))
-		if err != nil {
-			return outCtx, nil, err
-		}
-
+		log.Println("AAAA")
 		return outCtx, cc, nil
 	}
 
@@ -30,7 +31,8 @@ func main() {
 		grpc.UnknownServiceHandler(proxy.TransparentHandler(director)),
 	)
 
-	testpb.RegisterTestServiceServer(s, &Server{})
+	// testpb.RegisterTestServiceServer(s, &Server{})
+	commpb.RegisterCommServiceServer(s, &Server{})
 
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -41,9 +43,5 @@ func main() {
 }
 
 type Server struct {
-	testpb.UnimplementedTestServiceServer
-}
-
-func (s *Server) TestMethod(ctx context.Context, req *testpb.TestRequest) (*testpb.TestResponse, error) {
-	return &testpb.TestResponse{Message: req.Name}, nil
+	commpb.UnimplementedCommServiceServer
 }

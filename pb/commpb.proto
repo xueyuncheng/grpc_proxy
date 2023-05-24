@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package commpb;
+
+option go_package = "./commpb";
+
+service CommService {
+    rpc SendMsg (SendMsgReq) returns (SendMsgResp) {}
+}
+
+message SendMsgReq {
+    string msg = 1;
+}
+
+message SendMsgResp {
+    string msg = 1;
+}

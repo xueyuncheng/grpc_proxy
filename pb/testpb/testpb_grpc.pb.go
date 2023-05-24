@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	TestService_TestMethod_FullMethodName  = "/testpb.TestService/TestMethod"
-	TestService_TestMethod2_FullMethodName = "/testpb.TestService/TestMethod2"
+	TestService_TestMethod_FullMethodName = "/testpb.TestService/TestMethod"
 )
 
 // TestServiceClient is the client API for TestService service.
@@ -28,7 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TestServiceClient interface {
 	TestMethod(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error)
-	TestMethod2(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error)
 }
 
 type testServiceClient struct {
@@ -48,21 +46,11 @@ func (c *testServiceClient) TestMethod(ctx context.Context, in *TestRequest, opt
 	return out, nil
 }
 
-func (c *testServiceClient) TestMethod2(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error) {
-	out := new(TestResponse)
-	err := c.cc.Invoke(ctx, TestService_TestMethod2_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // TestServiceServer is the server API for TestService service.
 // All implementations must embed UnimplementedTestServiceServer
 // for forward compatibility
 type TestServiceServer interface {
 	TestMethod(context.Context, *TestRequest) (*TestResponse, error)
-	TestMethod2(context.Context, *TestRequest) (*TestResponse, error)
 	mustEmbedUnimplementedTestServiceServer()
 }
 
@@ -72,9 +60,6 @@ type UnimplementedTestServiceServer struct {
 
 func (UnimplementedTestServiceServer) TestMethod(context.Context, *TestRequest) (*TestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestMethod not implemented")
-}
-func (UnimplementedTestServiceServer) TestMethod2(context.Context, *TestRequest) (*TestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestMethod2 not implemented")
 }
 func (UnimplementedTestServiceServer) mustEmbedUnimplementedTestServiceServer() {}
 
@@ -107,24 +92,6 @@ func _TestService_TestMethod_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _TestService_TestMethod2_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(TestServiceServer).TestMethod2(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: TestService_TestMethod2_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServiceServer).TestMethod2(ctx, req.(*TestRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // TestService_ServiceDesc is the grpc.ServiceDesc for TestService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -135,10 +102,6 @@ var TestService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TestMethod",
 			Handler:    _TestService_TestMethod_Handler,
-		},
-		{
-			MethodName: "TestMethod2",
-			Handler:    _TestService_TestMethod2_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

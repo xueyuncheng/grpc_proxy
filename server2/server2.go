@@ -6,12 +6,11 @@ import (
 	"log"
 	"net"
 
-	"github.com/mwitkow/grpc-proxy/proxy"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	s := grpc.NewServer(grpc.CustomCodec(proxy.Codec()))
+	s := grpc.NewServer()
 
 	testpb.RegisterTestServiceServer(s, &Server{})
 
@@ -27,6 +26,6 @@ type Server struct {
 	testpb.UnimplementedTestServiceServer
 }
 
-func (s *Server) TestMethod2(ctx context.Context, req *testpb.TestRequest) (*testpb.TestResponse, error) {
-	return &testpb.TestResponse{}, nil
+func (s *Server) TestMethod(ctx context.Context, req *testpb.TestRequest) (*testpb.TestResponse, error) {
+	return &testpb.TestResponse{Message: req.Name}, nil
 }
